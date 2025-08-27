@@ -1,6 +1,6 @@
 // === Constants ===
 const BASE = "https://fsa-crud-2aa9294fe819.herokuapp.com/api";
-const COHORT = ""; // Make sure to change this!
+const COHORT = "/2506-CT-WEB-PT";
 const API = BASE + COHORT;
 
 // === State ===
@@ -102,6 +102,7 @@ function SelectedParty() {
     <address>${selectedParty.location}</address>
     <p>${selectedParty.description}</p>
     <GuestList></GuestList>
+    <button>Delete Party</button>
   `;
   $party.querySelector("GuestList").replaceWith(GuestList());
 
@@ -128,6 +129,23 @@ function GuestList() {
   return $ul;
 }
 
+function AddParty() {
+  const $form = document.createElement("form");
+  $form.innerHTML = `
+        <label for="name">Name</label>
+        <input type="text" type="name" placeholder="Name" required />
+        <label for="description">Description</label>
+        <input type="text" type="description" placeholder="Description" required />
+        <label for="date">Date</label>
+        <input type="text" type="date" placeholder="mm/dd/yyyy" required />
+        <label for="location">Location</label>
+        <input type="text" type="location" placeholder="Location" required />
+        <button>Add Party</button>
+  `;
+
+  return $form;
+}
+
 // === Render ===
 function render() {
   const $app = document.querySelector("#app");
@@ -142,11 +160,16 @@ function render() {
         <h2>Party Details</h2>
         <SelectedParty></SelectedParty>
       </section>
+      <section id="add-event">
+        <h2>Add a new party</h2>
+        <AddParty></AddParty>
+      </section>
     </main>
   `;
 
   $app.querySelector("PartyList").replaceWith(PartyList());
   $app.querySelector("SelectedParty").replaceWith(SelectedParty());
+  $app.querySelector("AddParty").replaceWith(AddParty());
 }
 
 async function init() {
