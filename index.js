@@ -57,6 +57,21 @@ async function getGuests() {
   }
 }
 
+async function addParty(partyObj) {
+  try {
+    await fetch(`${API}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(partyObj),
+    });
+    await getParties();
+  } catch (error) {
+    console.log(error, "Error with /POST");
+  }
+}
+
 // === Components ===
 
 /** Party name that shows more details about the party when clicked */
@@ -133,15 +148,30 @@ function AddParty() {
   const $form = document.createElement("form");
   $form.innerHTML = `
         <label for="name">Name</label>
-        <input type="text" type="name" placeholder="Name" required />
+        <input type="text" name="name" type="name" id="name" required>
         <label for="description">Description</label>
-        <input type="text" type="description" placeholder="Description" required />
+        <input type="text" name="description" type="description" id="description" required>
         <label for="date">Date</label>
-        <input type="text" type="date" placeholder="mm/dd/yyyy" required />
+        <input name="date" type="date" id="date" required>
         <label for="location">Location</label>
-        <input type="text" type="location" placeholder="Location" required />
+        <input type="text" name="location" type="location" id="location" required>
         <button>Add Party</button>
   `;
+
+  $form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const data = new FormData($form);
+    const isoDate = new Date(data.get("date")).toISOString();
+    const newPartyObj = {
+      name: data.get("name"),
+      description: data.get("description"),
+      date: isoDate,
+      location: data.get("location"),
+    };
+
+    await addParty(newPartyObj);
+    $form.reset();
+  });
 
   return $form;
 }
