@@ -72,6 +72,20 @@ async function addParty(partyObj) {
   }
 }
 
+async function removeParty(id) {
+  try {
+    await fetch(`${API}/events/${id}`, {
+      method: "DELETE",
+    });
+    if (selectedParty && selectedParty.id === id) {
+      selectedParty = null;
+    }
+    await getParties();
+  } catch (error) {
+    console.log(error, "Error with /DELETE");
+  }
+}
+
 // === Components ===
 
 /** Party name that shows more details about the party when clicked */
@@ -117,9 +131,19 @@ function SelectedParty() {
     <address>${selectedParty.location}</address>
     <p>${selectedParty.description}</p>
     <GuestList></GuestList>
-    <button>Delete Party</button>
+    <button class="delete" data-action="delete" data-id="${selectedParty.id}">
+      Delete Party
+    </button>
   `;
   $party.querySelector("GuestList").replaceWith(GuestList());
+
+  $party
+    .querySelector(".delete")
+    .addEventListener("click", async function (event) {
+      event.preventDefault();
+      const id = event.currentTarget.dataset.id;
+      await removeParty(id);
+    });
 
   return $party;
 }
